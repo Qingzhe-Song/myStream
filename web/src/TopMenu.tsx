@@ -6,9 +6,6 @@ function TopMenu() {
       <Button className="scale-145" variant="ghost">
         Home
       </Button>
-      <Button className="scale-145" variant="ghost">
-        Library
-      </Button>
     </div>
   );
 }

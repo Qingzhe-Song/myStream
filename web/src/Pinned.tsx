@@ -38,10 +38,10 @@ const test = (
 
 function Pinned() {
   return (
-    <div className="flex flex-col w-full max-w-[95%] gap-4">
+    <div className="flex flex-col w-full mx-auto max-w-[95%] gap-4">
       <Label className="text-2xl">Your Pinned</Label>
 
-      <Carousel className="">
+      <Carousel>
         <CarouselContent>
           <CarouselItem className="basis-1/4">{test}</CarouselItem>
           <CarouselItem className="basis-1/4">{test}</CarouselItem>
