@@ -1,0 +1,56 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "bbc8b92a-3fbf-45b2-8cbe-fd0b812723e2",
+  "prevIds": [
+    "e9413bbc-a8ad-4ab9-9f77-022ae382a192"
+  ],
+  "ddl": [
+    {
+      "name": "videos",
+      "entityType": "tables"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "uuid",
+      "entityType": "columns",
+      "table": "videos"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "videos"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "path",
+      "entityType": "columns",
+      "table": "videos"
+    },
+    {
+      "columns": [
+        "uuid"
+      ],
+      "nameExplicit": false,
+      "name": "users_pk",
+      "table": "videos",
+      "entityType": "pks"
+    }
+  ],
+  "renames": [
+    "users->videos"
+  ]
+}
