@@ -2,9 +2,7 @@
   "version": "7",
   "dialect": "sqlite",
   "id": "9fe57577-ca20-4ba5-a7d5-b5a519a7c523",
-  "prevIds": [
-    "bbc8b92a-3fbf-45b2-8cbe-fd0b812723e2"
-  ],
+  "prevIds": ["bbc8b92a-3fbf-45b2-8cbe-fd0b812723e2"],
   "ddl": [
     {
       "name": "users",
@@ -65,13 +63,9 @@
       "table": "videos"
     },
     {
-      "columns": [
-        "owner_id"
-      ],
+      "columns": ["owner_id"],
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
       "nameExplicit": false,
@@ -80,25 +74,19 @@
       "table": "videos"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "users_pk",
       "table": "users",
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "users_pk",
       "table": "videos",
       "entityType": "pks"
     }
   ],
-  "renames": [
-    "videos.uuid->videos.id"
-  ]
+  "renames": ["videos.uuid->videos.id"]
 }

@@ -2,9 +2,7 @@
   "version": "7",
   "dialect": "sqlite",
   "id": "e9413bbc-a8ad-4ab9-9f77-022ae382a192",
-  "prevIds": [
-    "00000000-0000-0000-0000-000000000000"
-  ],
+  "prevIds": ["00000000-0000-0000-0000-000000000000"],
   "ddl": [
     {
       "name": "users",
@@ -41,9 +39,7 @@
       "table": "users"
     },
     {
-      "columns": [
-        "uuid"
-      ],
+      "columns": ["uuid"],
       "nameExplicit": false,
       "name": "users_pk",
       "table": "users",

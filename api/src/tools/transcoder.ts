@@ -6,11 +6,18 @@ export class Transcoder {
   private args: string[];
   private response: string | null = null;
 
-  constructor(inputVideo: string) {
+  constructor(inputVideo: string, segmentIndex: number, segmentDuration = 6) {
     this.inputVideo = inputVideo;
+    const startTime = segmentIndex * segmentDuration;
+    const outputPath = `${dirname(this.inputVideo)}/output/segment_${String(segmentIndex).padStart(3, "0")}.ts`;
+
     this.args = [
+      "-ss",
+      String(startTime),
       "-i",
       this.inputVideo,
+      "-t",
+      String(segmentDuration),
       "-c:v",
       "libx264",
       "-preset",
@@ -21,29 +28,21 @@ export class Transcoder {
       "aac",
       "-b:a",
       "128k",
-      "-g",
-      "48",
-      "-keyint_min",
-      "48",
-      "-sc_threshold",
-      "0",
-      "-hls_time",
-      "6",
-      "-hls_playlist_type",
-      "vod",
-      "-hls_segment_filename",
-      dirname(this.inputVideo) + "/output/segment_%03d.ts",
-      dirname(this.inputVideo) + "/output/playlist.m3u8",
+      "-avoid_negative_ts",
+      "make_zero",
+      "-f",
+      "mpegts",
+      outputPath,
     ];
   }
 
   private makeOutput(): Promise<void> {
     return new Promise((resolve, reject) => {
-        const child = spawn("mkdir", [dirname(this.inputVideo) + "/output"]);
-        child.on("close", () => {
-            resolve();
-        })
-    })
+      const child = spawn("mkdir", [dirname(this.inputVideo) + "/output"]);
+      child.on("close", () => {
+        resolve();
+      });
+    });
   }
 
   public async start(): Promise<ChildProcess> {
