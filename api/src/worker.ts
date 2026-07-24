@@ -5,7 +5,7 @@ const worker = new Worker(
   "Transcode",
   async (job: Job) => {
     const data = job.data;
-    const transcoder = new Transcoder(data.path, data.segment);
+    const transcoder = new Transcoder(data.path, data.seg);
 
     await transcoder.start();
 

@@ -11,29 +11,40 @@ export class Transcoder {
     const startTime = segmentIndex * segmentDuration;
     const outputPath = `${dirname(this.inputVideo)}/output/segment_${String(segmentIndex).padStart(3, "0")}.ts`;
 
-    this.args = [
-      "-ss",
-      String(startTime),
-      "-i",
-      this.inputVideo,
-      "-t",
-      String(segmentDuration),
-      "-c:v",
-      "libx264",
-      "-preset",
-      "veryfast",
-      "-crf",
-      "23",
-      "-c:a",
-      "aac",
-      "-b:a",
-      "128k",
-      "-avoid_negative_ts",
-      "make_zero",
-      "-f",
-      "mpegts",
-      outputPath,
-    ];
+    const fastSeekTarget = Math.max(0, startTime - 2);
+  const preciseOffset = startTime - fastSeekTarget;
+
+  this.args = [
+  "-ss", String(fastSeekTarget),
+  "-i", this.inputVideo,
+  "-ss", String(preciseOffset),
+
+  "-t", String(segmentDuration),
+
+  "-c:v", "libx264",
+  "-preset", "veryfast",
+  "-crf", "23",
+  "-pix_fmt", "yuv420p",
+
+  "-g", "150",            // if 30fps × 5s
+  "-keyint_min", "150",
+  "-sc_threshold", "0",
+
+  "-c:a", "aac",
+  "-b:a", "128k",
+  "-ar", "48000",
+  "-ac", "2",
+
+  "-fflags", "+genpts",
+  "-avoid_negative_ts", "make_zero",
+
+  "-muxpreload", "0",
+  "-muxdelay", "0",
+
+  "-f", "mpegts",
+
+  outputPath,
+];
   }
 
   private makeOutput(): Promise<void> {

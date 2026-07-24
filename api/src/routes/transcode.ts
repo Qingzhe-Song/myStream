@@ -25,6 +25,13 @@ const event = new QueueEvents("Transcode", {
 app.get("/:id/output/:segment", async (c) => {
   const { id, segment } = c.req.param();
 
+  const match = segment.match(/segment_(\d+)\.ts/);
+  if (!match) {
+    return c.json({ message: "Invalid segment filename" }, 400);
+  }
+
+  const segmentIndex = parseInt(match[1], 10);
+
   const result = await db.select().from(videos).where(eq(videos.id, id));
   if (result.length == 0) {
     return c.json({ message: "Failed" }, 404);
@@ -33,7 +40,7 @@ app.get("/:id/output/:segment", async (c) => {
   const path = result[0].path;
   if (
     existsSync(
-      `${dirname(path!)}/output/segment_${String(segment).padStart(3, "0")}.ts`,
+      `${dirname(path!)}/output/segment_${String(segmentIndex).padStart(3, "0")}.ts`,
     )
   ) {
     return c.json(
@@ -48,21 +55,23 @@ app.get("/:id/output/:segment", async (c) => {
     "transcode",
     {
       id,
-      segment,
+      seg : segmentIndex,
       path,
     },
     {
-      jobId: `${id}-${segment}`,
+      jobId: `${id}-${segmentIndex}`,
     },
   );
 
-  for (let i = 0; i < 4; i++) {
-    const newSeg = segment + i;
+  for (let i = 1; i < 4; i++) {
+    const newSeg = segmentIndex + i;
 
     await queue.add("transcode", {
       id,
-      newSeg,
+      seg: newSeg,
       path,
+    }, {
+      jobId : `${id}-${newSeg}`
     })
   }
 
@@ -70,12 +79,9 @@ app.get("/:id/output/:segment", async (c) => {
 
   c.header("X-Accel-Redirect", `/reserve/${id}/output/${segment}`);
 
-  return c.json(
-    {
-      message: "Successfully queued and sent header back to nginx",
-    },
-    200,
-  );
+  return c.body(null, 200);
 });
+
+await queue.obliterate({ force: true });
 
 export default app;
