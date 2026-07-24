@@ -9,7 +9,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "format": "npx prettier . --write"
+    "format": "npx prettier . --write",
+    "dev:worker": "tsx watch src/worker.ts",
+    "start:worker": "node dist/worker.js"
   },
   "dependencies": {
     "@hono/node-server": "^2.0.8",
@@ -22,7 +24,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^20.11.17",
+    "@types/node": "^20.19.43",
     "drizzle-kit": "^1.0.0-rc.4",
     "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",
