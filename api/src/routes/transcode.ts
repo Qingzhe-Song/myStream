@@ -68,7 +68,7 @@ app.get("/:id/output/:segment", async (c) => {
 
   await job.waitUntilFinished(event);
 
-  c.header("X-Accel-Redirect", `/reserve/${id}/output/segment_${String(segment).padStart(3, "0")}.ts`);
+  c.header("X-Accel-Redirect", `/reserve/${id}/output/${segment}`);
 
   return c.json(
     {
