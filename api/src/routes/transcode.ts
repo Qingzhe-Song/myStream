@@ -38,18 +38,6 @@ app.get("/:id/output/:segment", async (c) => {
   }
 
   const path = result[0].path;
-  if (
-    existsSync(
-      `${dirname(path!)}/output/segment_${String(segmentIndex).padStart(3, "0")}.ts`,
-    )
-  ) {
-    return c.json(
-      {
-        message: "File Already Exists",
-      },
-      404,
-    );
-  }
 
   const job = await queue.add(
     "transcode",
@@ -63,7 +51,7 @@ app.get("/:id/output/:segment", async (c) => {
     },
   );
 
-  for (let i = 1; i < 4; i++) {
+  for (let i = 1; i <= 4; i++) {
     const newSeg = segmentIndex + i;
 
     await queue.add("transcode", {
