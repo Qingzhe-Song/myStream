@@ -1,25 +1,19 @@
-import { Job, Queue, QueueEvents } from "bullmq";
+import { Job } from "bullmq";
 import { Hono } from "hono";
 import { db } from "../db/index.js";
 import { videos } from "../db/schema/videos.js";
 import { eq } from "drizzle-orm";
 import type { TranscoderData } from "../types/transcoder.types.js";
 import { Transcoder } from "../tools/transcoder.js";
+import { transcodeEvent, transcodeQueue } from "../bullmq/queue.js";
 
 const app = new Hono();
 
-const queue = new Queue("Transcode", {
-  connection: {
-    host: "localhost",
-    port: 6379,
-  },
-});
+app.get("/:id/output/playlist.m3u8", async (c) => {
+  const { id } = c.req.param();
+  c.header("X-Accel-Redirect", `/re-serve/${id}/output/playlist.m3u8`);
 
-const event = new QueueEvents("Transcode", {
-  connection: {
-    host: "localhost",
-    port: 6379,
-  },
+  return c.body(null, 200);
 });
 
 app.get("/:id/output/:segment", async (c) => {
@@ -29,13 +23,13 @@ app.get("/:id/output/:segment", async (c) => {
   );
   const result = await db.select().from(videos).where(eq(videos.id, id));
   if (result.length === 0) {
-    return c.json({message: "Video not found"}, 404);
+    return c.json({ message: "Video not found" }, 404);
   }
 
   const path = result[0].path;
   const sec = await Transcoder.getTotalSec(path!);
 
-  const job: Job<TranscoderData> = await queue.add(
+  const job: Job<TranscoderData> = await transcodeQueue.add(
     "transcode",
     {
       inputVideoPath: path,
@@ -50,7 +44,7 @@ app.get("/:id/output/:segment", async (c) => {
   for (let i = 1; i <= 4; i++) {
     const newSegmentIndex = segmentIndex + i;
 
-    await queue.add(
+    await transcodeQueue.add(
       "transcode",
       {
         inputVideoPath: path,
@@ -63,7 +57,7 @@ app.get("/:id/output/:segment", async (c) => {
     );
   }
 
-  await job.waitUntilFinished(event);
+  await job.waitUntilFinished(transcodeEvent);
   c.header("X-Accel-Redirect", `/re-serve/${id}/output/${segment}`);
 
   return c.body(null, 200);

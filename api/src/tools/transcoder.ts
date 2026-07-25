@@ -49,7 +49,7 @@ export class Transcoder {
   }
 
   public async start(): Promise<void> {
-    await mkdir(`${this.inputVideoPath}/output`, { recursive: true });
+    await mkdir(`${dirname(this.inputVideoPath)}/output`, { recursive: true });
 
     return new Promise((resolve, reject) => {
       const child: ChildProcess = spawn("ffmpeg", this.args);

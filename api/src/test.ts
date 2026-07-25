@@ -6,7 +6,9 @@ import { Transcoder } from "./tools/transcoder.js";
 // const trans = new Transcoder("/home/qs-ubuntu/myStream/test/video.mp4", 12);
 
 const test = () => {
-return Transcoder.getTotalSec("/home/qs-ubuntu/myStream/video/658e7b18-1096-4ddd-903f-77ec912f27c8/video.mp4");
-} 
+  return Transcoder.getTotalSec(
+    "/home/qs-ubuntu/myStream/video/658e7b18-1096-4ddd-903f-77ec912f27c8/video.mp4",
+  );
+};
 
 console.log(await test());

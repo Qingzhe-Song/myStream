@@ -1,20 +1,22 @@
 import { Worker, Job } from "bullmq";
-import { Transcoder } from "./tools/transcoder.js";
-import type { TranscoderData } from "./types/transcoder.types.js";
+import { Transcoder } from "../tools/transcoder.js";
+import type { TranscoderData } from "../types/transcoder.types.js";
+import { redisConnection } from "./queue.js";
 
 const worker = new Worker(
   "Transcode",
   async (job: Job) => {
     const data: TranscoderData = job.data;
 
-    const transcoder = new Transcoder(data.inputVideoPath, data.segmentIndex, data.totalVideoSec);
+    const transcoder = new Transcoder(
+      data.inputVideoPath,
+      data.segmentIndex,
+      data.totalVideoSec,
+    );
     await transcoder.start();
   },
   {
-    connection: {
-      host: "localhost",
-      port: 6379,
-    },
+    connection: redisConnection,
   },
 );
 
@@ -24,6 +26,6 @@ worker.on("completed", (job) => {
 
 worker.on("failed", (job) => {
   console.log(`Job ${job?.id} has failed`);
-})
+});
 
 console.log("Worker started");
