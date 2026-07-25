@@ -10,7 +10,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "format": "npx prettier . --write",
-    "dev:worker": "tsx watch src/worker.ts",
+    "dev:worker": "tsx watch src/bullmq/worker.ts",
     "start:worker": "node dist/worker.js"
   },
   "dependencies": {
