@@ -1,15 +1,14 @@
 import { Worker, Job } from "bullmq";
 import { Transcoder } from "./tools/transcoder.js";
+import type { TranscoderData } from "./types/transcoder.types.js";
 
 const worker = new Worker(
   "Transcode",
   async (job: Job) => {
-    const data = job.data;
-    const transcoder = new Transcoder(data.path, data.seg);
+    const data: TranscoderData = job.data;
 
+    const transcoder = new Transcoder(data.inputVideoPath, data.segmentIndex, data.totalVideoSec);
     await transcoder.start();
-
-    return "working";
   },
   {
     connection: {
@@ -19,12 +18,12 @@ const worker = new Worker(
   },
 );
 
-worker.on("completed", (job: Job, returnvalue: any) => {
-  console.log("good");
+worker.on("completed", (job) => {
+  console.log(`Job ${job.id} has completed`);
 });
 
-worker.on("failed", (job: Job | undefined, error: Error, prev: string) => {
-  console.log("bad");
-});
+worker.on("failed", (job) => {
+  console.log(`Job ${job?.id} has failed`);
+})
 
-console.log("worker is working");
+console.log("Worker started");

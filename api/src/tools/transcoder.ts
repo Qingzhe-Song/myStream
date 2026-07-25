@@ -1,20 +1,25 @@
 import { ChildProcess, spawn } from "node:child_process";
-import { rename } from "node:fs";
+import { mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 
 export class Transcoder {
-  private inputVideo: string;
+  private inputVideoPath: string = "";
   private args: string[];
   private buffer: string = "";
-  private output = "";
+  private outputFile: string = "";
 
-  constructor(inputVideo: string, segmentIndex: number, segmentDuration = 5) {
-    this.inputVideo = inputVideo;
+  constructor(
+    inputVideoPath: string,
+    segmentIndex: number,
+    totalVideoSec: number,
+    segmentDuration: number = 5,
+  ) {
     const startTime = segmentIndex * segmentDuration;
-    const outputPath = `${dirname(this.inputVideo)}/output/segment_${String(segmentIndex).padStart(3, "0")}.ts`;
-    this.output = outputPath;
-
     const endTime = startTime + segmentDuration;
+    const digit = String(totalVideoSec / segmentDuration).length;
+
+    this.inputVideoPath = inputVideoPath;
+    this.outputFile = `${dirname(inputVideoPath)}/output/segment_${String(segmentIndex).padStart(digit, "0")}.ts`;
 
     this.args = [
       "-y",
@@ -22,11 +27,9 @@ export class Transcoder {
       String(startTime),
       "-copyts",
       "-i",
-      this.inputVideo,
-
+      inputVideoPath,
       "-to",
       String(endTime),
-
       "-c:v",
       "libx264",
       "-preset",
@@ -35,44 +38,18 @@ export class Transcoder {
       "23",
       "-pix_fmt",
       "yuv420p",
-
-      "-g",
-      "150",
-      "-keyint_min",
-      "150",
-      "-sc_threshold",
-      "0",
-
       "-c:a",
       "aac",
       "-b:a",
-      "128k",
-      "-ar",
-      "48000",
-      "-ac",
-      "2",
-
+      "256k",
       "-f",
       "mpegts",
-
-      outputPath + ".part",
+      this.outputFile,
     ];
   }
 
-  private makeOutput(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const child = spawn("mkdir", [
-        "-p",
-        dirname(this.inputVideo) + "/output",
-      ]);
-
-      child.on("close", resolve);
-      child.on("error", reject);
-    });
-  }
-
   public async start(): Promise<void> {
-    await this.makeOutput();
+    await mkdir(`${this.inputVideoPath}/output`, { recursive: true });
 
     return new Promise((resolve, reject) => {
       const child: ChildProcess = spawn("ffmpeg", this.args);
@@ -82,15 +59,43 @@ export class Transcoder {
       });
 
       child.on("close", (code) => {
-        rename(this.output + ".part", this.output, () => {});
-        resolve();
+        if (code !== 0) return reject(new Error(`Bad exit code: ${code}`));
+        return resolve();
       });
-
       child.on("error", reject);
     });
   }
 
   public getBuffer(): string | null {
     return this.buffer;
+  }
+
+  public static getTotalSec(inputVideoPath: string): Promise<number> {
+    const args = [
+      "-v",
+      "error",
+      "-show_entries",
+      "format=duration",
+      "-of",
+      "default=noprint_wrappers=1:nokey=1",
+      inputVideoPath,
+    ];
+
+    return new Promise((resolve, reject) => {
+      const child: ChildProcess = spawn("ffprobe", args);
+      let duration: string = "";
+      child.stdout?.on("data", (data) => {
+        duration += data;
+      });
+
+      child.on("close", (code) => {
+        if (code !== 0) return reject(new Error(`Bad exit code: ${code}`));
+        if (duration.trim() === "")
+          return reject(new Error("Bad FFprobe data"));
+        return resolve(Number(duration.trim()));
+      });
+
+      child.on("error", reject);
+    });
   }
 }

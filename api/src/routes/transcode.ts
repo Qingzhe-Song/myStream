@@ -1,10 +1,10 @@
-import { Queue, QueueEvents } from "bullmq";
+import { Job, Queue, QueueEvents } from "bullmq";
 import { Hono } from "hono";
 import { db } from "../db/index.js";
 import { videos } from "../db/schema/videos.js";
 import { eq } from "drizzle-orm";
-import { existsSync } from "fs";
-import { dirname } from "path";
+import type { TranscoderData } from "../types/transcoder.types.js";
+import { Transcoder } from "../tools/transcoder.js";
 
 const app = new Hono();
 
@@ -19,32 +19,28 @@ const event = new QueueEvents("Transcode", {
   connection: {
     host: "localhost",
     port: 6379,
-  }
-})
+  },
+});
 
 app.get("/:id/output/:segment", async (c) => {
   const { id, segment } = c.req.param();
-
-  const match = segment.match(/segment_(\d+)\.ts/);
-  if (!match) {
-    return c.json({ message: "Invalid segment filename" }, 400);
-  }
-
-  const segmentIndex = parseInt(match[1], 10);
-
+  const segmentIndex = Number(
+    segment.replace("segment_", "").replace(".ts", ""),
+  );
   const result = await db.select().from(videos).where(eq(videos.id, id));
-  if (result.length == 0) {
-    return c.json({ message: "Failed" }, 404);
+  if (result.length === 0) {
+    return c.json({message: "Video not found"}, 404);
   }
 
   const path = result[0].path;
+  const sec = await Transcoder.getTotalSec(path!);
 
-  const job = await queue.add(
+  const job: Job<TranscoderData> = await queue.add(
     "transcode",
     {
-      id,
-      seg : segmentIndex,
-      path,
+      inputVideoPath: path,
+      segmentIndex,
+      totalVideoSec: sec,
     },
     {
       jobId: `${id}-${segmentIndex}`,
@@ -52,24 +48,25 @@ app.get("/:id/output/:segment", async (c) => {
   );
 
   for (let i = 1; i <= 4; i++) {
-    const newSeg = segmentIndex + i;
+    const newSegmentIndex = segmentIndex + i;
 
-    await queue.add("transcode", {
-      id,
-      seg: newSeg,
-      path,
-    }, {
-      jobId : `${id}-${newSeg}`
-    })
+    await queue.add(
+      "transcode",
+      {
+        inputVideoPath: path,
+        segmentIndex: newSegmentIndex,
+        totalVideoSec: sec,
+      },
+      {
+        jobId: `${id}-${newSegmentIndex}`,
+      },
+    );
   }
 
   await job.waitUntilFinished(event);
-
-  c.header("X-Accel-Redirect", `/reserve/${id}/output/${segment}`);
+  c.header("X-Accel-Redirect", `/re-serve/${id}/output/${segment}`);
 
   return c.body(null, 200);
 });
-
-await queue.obliterate({ force: true });
 
 export default app;
