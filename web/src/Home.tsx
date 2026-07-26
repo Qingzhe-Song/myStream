@@ -1,23 +1,18 @@
 import { useEffect, useState } from "react";
 import Library from "./Library";
 import Pinned from "./Pinned";
+import type { VideoData } from "./types/video.types";
 
 function Home() {
-  const [data, setData] = useState([]);
+  const [videos, setVideos] = useState<VideoData[]>([]);
 
   useEffect(() => {
-    async function get() {
-      const res = await fetch("http://localhost:3000/video");
-      const temp = await res.json();
-      setData(temp);
-    }
-
-    get();
+    const {videos} = useVideo()
   }, [])
 
   return (
     <div className="flex flex-col justify-center mt-15 px-12 gap-20">
-      <Pinned />
+      {/* <Pinned /> */}
       <Library arr={data!}/>
     </div>
   );

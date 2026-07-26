@@ -7,17 +7,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { VideoData } from "./types/test.type";
+import type { VideoData } from "./types/video.types";
+import { useNavigate } from "@tanstack/react-router";
 
 type VideoCardProp = {
     video: VideoData;
 }
 
 function VideoCard({video} : VideoCardProp) {
-
+  const nav = useNavigate();
+  
   return (
     <div>
-      <Card>
+      <Card onClick={() => {
+        nav({to: "/watch/$id", params: {id: video.id}})
+      }}>
         <CardHeader>
           <CardTitle>{video.name}</CardTitle>
           <CardDescription>Card Description</CardDescription>
