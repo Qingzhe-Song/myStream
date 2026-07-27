@@ -13,4 +13,4 @@ export const transcodeEvent = new QueueEvents("Transcode", {
   connection: redisConnection,
 });
 
-await transcodeQueue.obliterate({force: true});
+await transcodeQueue.obliterate({ force: true });

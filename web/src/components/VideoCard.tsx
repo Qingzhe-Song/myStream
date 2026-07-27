@@ -24,7 +24,7 @@ function VideoCard({ video }: VideoCardProps) {
         }}
       >
         <CardContent>
-          <p>Include Picture Later</p>
+          <img src={`http://localhost:3000/video/${video.id}/thumbnail`}></img>
         </CardContent>
         <CardHeader>
           <CardTitle>{video.name}</CardTitle>
