@@ -1,13 +1,9 @@
-import { Label } from "./components/ui/label";
-import type { VideoData } from "./types/video.types";
+import { Label } from "./ui/label";
+import { useVideo } from "../hooks/useVideo";
 import VideoCard from "./VideoCard";
 
-type LibraryProp = {
-  arr: VideoData[];
-};
-
-function Library(videoArr: LibraryProp) {
-  const { arr } = videoArr;
+function Library() {
+  const { data: videos = [] } = useVideo();
 
   return (
     <div>
@@ -15,7 +11,7 @@ function Library(videoArr: LibraryProp) {
         <Label className="text-2xl">Library</Label>
       </div>
       <div className="grid grid-cols-[repeat(auto-fill,200px)] gap-4 justify-left pt-4">
-        {arr.map((v) => {
+        {videos.map((v) => {
           return <VideoCard key={v.id} video={v} />;
         })}
       </div>
