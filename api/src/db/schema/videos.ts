@@ -5,4 +5,5 @@ export const videos = sqliteTable("videos", {
   name: text(),
   thumbnail: text(),
   path: text(),
+  duration: text(),
 });

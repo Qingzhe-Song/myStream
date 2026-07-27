@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -24,14 +23,13 @@ function VideoCard({ video }: VideoCardProps) {
         }}
       >
         <CardContent>
-          <img src={`http://localhost:3000/video/${video.id}/thumbnail`}></img>
+          <img src={`http://localhost:3000/video/${video.id}/thumbnail`} className="aspect-video object-cover"></img>
         </CardContent>
         <CardHeader>
-          <CardTitle>{video.name}</CardTitle>
-          <CardDescription>Card Description</CardDescription>
+          <CardTitle className="line-clamp-2 hover:line-clamp-none">{video.name}</CardTitle>
         </CardHeader>
         <CardFooter>
-          <p>Include Time Later</p>
+          <p>Duration: {video.duration}</p>
         </CardFooter>
       </Card>
     </div>

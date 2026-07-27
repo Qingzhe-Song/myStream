@@ -10,7 +10,7 @@ function Library() {
       <div>
         <Label className="text-2xl">Library</Label>
       </div>
-      <div className="grid grid-cols-[repeat(auto-fill,200px)] gap-4 justify-left pt-4">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 pt-4">
         {videos.map((v) => {
           return <VideoCard key={v.id} video={v} />;
         })}

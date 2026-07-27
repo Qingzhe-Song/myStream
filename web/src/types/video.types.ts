@@ -3,4 +3,5 @@ export type VideoData = {
   name: string;
   thumbnail: string;
   path: string;
+  duration: string;
 };
