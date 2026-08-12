@@ -2,9 +2,7 @@
   "version": "7",
   "dialect": "sqlite",
   "id": "e9905261-060b-4463-b118-94c2a4a1a30b",
-  "prevIds": [
-    "9eaaa878-790c-4dbb-a4f5-6f181d307899"
-  ],
+  "prevIds": ["9eaaa878-790c-4dbb-a4f5-6f181d307899"],
   "ddl": [
     {
       "name": "videos",
@@ -61,9 +59,7 @@
       "table": "videos"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "users_pk",
       "table": "videos",

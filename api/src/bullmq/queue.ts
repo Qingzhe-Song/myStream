@@ -1,8 +1,9 @@
+import "dotenv/config";
 import { Queue, QueueEvents } from "bullmq";
 
 export const redisConnection = {
-  host: "localhost",
-  port: 6379,
+  host: process.env.REDIS_HOST ?? "localhost",
+  port: Number(process.env.REDIS_PORT ?? 6379),
 };
 
 export const transcodeQueue = new Queue("Transcode", {
@@ -12,5 +13,3 @@ export const transcodeQueue = new Queue("Transcode", {
 export const transcodeEvent = new QueueEvents("Transcode", {
   connection: redisConnection,
 });
-
-await transcodeQueue.obliterate({ force: true });

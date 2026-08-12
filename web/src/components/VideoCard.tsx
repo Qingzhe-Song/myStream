@@ -25,10 +25,15 @@ function VideoCard({ video }: VideoCardProps) {
         }}
       >
         <CardContent>
-          <img src={`${api}/${video.id}/thumbnail`} className="aspect-video object-cover"></img>
+          <img
+            src={`${api}/${video.id}/thumbnail`}
+            className="aspect-video object-cover"
+          ></img>
         </CardContent>
         <CardHeader>
-          <CardTitle className="line-clamp-2 hover:line-clamp-none">{video.name}</CardTitle>
+          <CardTitle className="line-clamp-2 hover:line-clamp-none">
+            {video.name}
+          </CardTitle>
         </CardHeader>
         <CardFooter>
           <p>Duration: {video.duration}</p>

@@ -19,7 +19,7 @@ app.get("/:id/playlist.m3u8", async (c) => {
 app.get("/:id/:segment", async (c) => {
   const { id, segment } = c.req.param();
   const segmentIndex = Number(segment);
-  
+
   const result = await db.select().from(videos).where(eq(videos.id, id));
   if (result.length === 0) {
     return c.json({ message: "Video not found" }, 404);
@@ -41,7 +41,7 @@ app.get("/:id/:segment", async (c) => {
   );
 
   const max = Math.ceil(sec / 5);
-  for (let i = 1; i <= 4 && segmentIndex + i <= max; i++) {
+  for (let i = 1; i <= 4 && segmentIndex + i < max; i++) {
     const newSegmentIndex = segmentIndex + i;
 
     await transcodeQueue.add(

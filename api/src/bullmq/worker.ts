@@ -8,11 +8,7 @@ const worker = new Worker(
   async (job: Job) => {
     const data: TranscoderData = job.data;
 
-    const transcoder = new Transcoder(
-      data.inputVideoPath,
-      data.segmentIndex,
-      data.totalVideoSec,
-    );
+    const transcoder = new Transcoder(data.inputVideoPath, data.segmentIndex);
     await transcoder.start();
   },
   {

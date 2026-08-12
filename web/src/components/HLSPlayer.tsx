@@ -10,9 +10,7 @@ function HlsPlayer() {
     const hls = new Hls();
     const video = videoRef.current;
     const streamURL = import.meta.env.VITE_NGINX;
-    hls.loadSource(
-      `${streamURL}/stream/${id}/playlist.m3u8`,
-    );
+    hls.loadSource(`${streamURL}/stream/${id}/playlist.m3u8`);
     hls.attachMedia(video!);
   }, [id]);
 

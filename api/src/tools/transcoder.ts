@@ -1,5 +1,5 @@
 import { ChildProcess, spawn } from "node:child_process";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
 export class Transcoder {
@@ -11,7 +11,6 @@ export class Transcoder {
   constructor(
     inputVideoPath: string,
     segmentIndex: number,
-    totalVideoSec: number,
     segmentDuration: number = 5,
   ) {
     const startTime = segmentIndex * segmentDuration;
@@ -96,5 +95,33 @@ export class Transcoder {
 
       child.on("error", reject);
     });
+  }
+
+  public static async generatePlaylist(
+    inputVideoPath: string,
+    totalTime: number,
+    duration: number = 5,
+  ): Promise<void> {
+    const folder = dirname(inputVideoPath);
+    await mkdir(`${folder}/output`, { recursive: true });
+
+    const totalSeg = Math.ceil(totalTime / duration);
+
+    let buffer: string = "";
+    buffer += `#EXTM3U\n#EXT-X-VERSION:6\n#EXT-X-TARGETDURATION:${duration}\n#EXT-X-PLAYLIST-TYPE:VOD\n`;
+
+    for (let i = 0; i < totalSeg; i++) {
+      if (i === totalSeg - 1) {
+        const finalTime: number = i * duration;
+        const realTime: number = totalTime - finalTime;
+        buffer += `#EXTINF:${realTime.toFixed(3)},\n${i}.ts\n`;
+      } else {
+        buffer += `#EXTINF:${duration.toFixed(3)},\n${i}.ts\n`;
+      }
+    }
+
+    buffer += "#EXT-X-ENDLIST";
+
+    await writeFile(`${folder}/output/playlist.m3u8`, buffer, "utf8");
   }
 }
