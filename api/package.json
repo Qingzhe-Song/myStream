@@ -11,7 +11,7 @@
     "db:studio": "drizzle-kit studio",
     "format": "npx prettier . --write",
     "dev:worker": "tsx watch src/bullmq/worker.ts",
-    "start:worker": "node dist/worker.js"
+    "start:worker": "node dist/bullmq/worker.js"
   },
   "dependencies": {
     "@hono/node-server": "^2.0.8",

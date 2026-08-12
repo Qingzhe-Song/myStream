@@ -12,6 +12,8 @@ type VideoCardProps = {
   video: VideoData;
 };
 
+const api = import.meta.env.VITE_API;
+
 function VideoCard({ video }: VideoCardProps) {
   const navigate = useNavigate();
 
@@ -23,7 +25,7 @@ function VideoCard({ video }: VideoCardProps) {
         }}
       >
         <CardContent>
-          <img src={`http://localhost:3000/video/${video.id}/thumbnail`} className="aspect-video object-cover"></img>
+          <img src={`${api}/${video.id}/thumbnail`} className="aspect-video object-cover"></img>
         </CardContent>
         <CardHeader>
           <CardTitle className="line-clamp-2 hover:line-clamp-none">{video.name}</CardTitle>
