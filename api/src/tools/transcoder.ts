@@ -16,10 +16,9 @@ export class Transcoder {
   ) {
     const startTime = segmentIndex * segmentDuration;
     const endTime = startTime + segmentDuration;
-    const digit = String(totalVideoSec / segmentDuration).length;
 
     this.inputVideoPath = inputVideoPath;
-    this.outputFile = `${dirname(inputVideoPath)}/output/segment_${String(segmentIndex).padStart(digit, "0")}.ts`;
+    this.outputFile = `${dirname(inputVideoPath)}/output/${segmentIndex}.ts`;
 
     this.args = [
       "-y",

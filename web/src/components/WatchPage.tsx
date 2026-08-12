@@ -1,4 +1,4 @@
-import HlsPlayer from "./HlsPlayer";
+import HlsPlayer from "./HLSPlayer";
 
 function WatchPage() {
   return (

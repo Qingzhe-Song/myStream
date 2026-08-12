@@ -9,7 +9,7 @@ const app = new Hono();
 app.use(
   "*",
   cors({
-    origin: "http://127.0.0.1:5173",
+    origin: "*",
     allowHeaders: ["X-Custom-Header", "Upgrade-Insecure-Requests"],
     allowMethods: ["POST", "GET", "OPTIONS"],
     exposeHeaders: ["Content-Length", "X-Kuma-Revision"],

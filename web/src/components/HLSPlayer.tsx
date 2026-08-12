@@ -9,8 +9,9 @@ function HlsPlayer() {
   useEffect(() => {
     const hls = new Hls();
     const video = videoRef.current;
+    const streamURL = import.meta.env.VITE_NGINX;
     hls.loadSource(
-      `http://172.25.70.77:6767/stream/${id}/output/playlist.m3u8`,
+      `${streamURL}/stream/${id}/playlist.m3u8`,
     );
     hls.attachMedia(video!);
   }, [id]);
