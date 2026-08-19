@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import type { TranscoderData } from "../types/transcoder.types.js";
 import { Transcoder } from "../tools/transcoder.js";
 import { transcodeEvent, transcodeQueue } from "../bullmq/queue.js";
+import { basename, extname } from "path";
 
 const app = new Hono();
 
@@ -18,7 +19,7 @@ app.get("/:id/playlist.m3u8", async (c) => {
 
 app.get("/:id/:segment", async (c) => {
   const { id, segment } = c.req.param();
-  const segmentIndex = Number(segment);
+  const segmentIndex = Number(basename(segment, extname(segment)));
 
   const result = await db.select().from(videos).where(eq(videos.id, id));
   if (result.length === 0) {

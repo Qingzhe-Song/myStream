@@ -17,12 +17,13 @@ const watcher = chokidar.watch(target, {
 
 watcher.on("add", async (path) => {
     const uuid = randomUUID();
+    const realPath = `${dirname(path)}/${uuid}/${basename(path)}`;
     const fileName = basename(path, extname(path));
 
     await db.insert(videos).values({
         id: uuid,
         name: fileName,
-        path,
+        path: realPath,
         duration: String(await Transcoder.getTotalSec(path)),
         thumbnail: "TBD"
     })

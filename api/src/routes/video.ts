@@ -16,7 +16,7 @@ app.get("/:id", async (c) => {
   const { id } = c.req.param();
   const data = await db.select().from(videos).where(eq(videos.id, id));
 
-  if (data.length == 0) {
+  if (data.length === 0) {
     return c.json({ message: "Video not found" }, 404);
   }
 

@@ -8,80 +8,80 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as HomeRouteImport } from "./routes/home";
-import { Route as WatchIdRouteImport } from "./routes/watch.$id";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as HomeRouteImport } from './routes/home'
+import { Route as WatchIdRouteImport } from './routes/watch.$id'
 
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const HomeRoute = HomeRouteImport.update({
-  id: "/home",
-  path: "/home",
+  id: '/home',
+  path: '/home',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const WatchIdRoute = WatchIdRouteImport.update({
-  id: "/watch/$id",
-  path: "/watch/$id",
+  id: '/watch/$id',
+  path: '/watch/$id',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/home": typeof HomeRoute;
-  "/watch/$id": typeof WatchIdRoute;
+  '/': typeof IndexRoute
+  '/home': typeof HomeRoute
+  '/watch/$id': typeof WatchIdRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/home": typeof HomeRoute;
-  "/watch/$id": typeof WatchIdRoute;
+  '/': typeof IndexRoute
+  '/home': typeof HomeRoute
+  '/watch/$id': typeof WatchIdRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/home": typeof HomeRoute;
-  "/watch/$id": typeof WatchIdRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/home': typeof HomeRoute
+  '/watch/$id': typeof WatchIdRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/home" | "/watch/$id";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/home" | "/watch/$id";
-  id: "__root__" | "/" | "/home" | "/watch/$id";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/home' | '/watch/$id'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/home' | '/watch/$id'
+  id: '__root__' | '/' | '/home' | '/watch/$id'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  HomeRoute: typeof HomeRoute;
-  WatchIdRoute: typeof WatchIdRoute;
+  IndexRoute: typeof IndexRoute
+  HomeRoute: typeof HomeRoute
+  WatchIdRoute: typeof WatchIdRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/home": {
-      id: "/home";
-      path: "/home";
-      fullPath: "/home";
-      preLoaderRoute: typeof HomeRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/watch/$id": {
-      id: "/watch/$id";
-      path: "/watch/$id";
-      fullPath: "/watch/$id";
-      preLoaderRoute: typeof WatchIdRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/watch/$id': {
+      id: '/watch/$id'
+      path: '/watch/$id'
+      fullPath: '/watch/$id'
+      preLoaderRoute: typeof WatchIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,7 +89,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HomeRoute: HomeRoute,
   WatchIdRoute: WatchIdRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
