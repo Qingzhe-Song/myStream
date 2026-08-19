@@ -10,14 +10,13 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "format": "npx prettier . --write",
-    "dev:worker": "tsx watch src/bullmq/worker.ts",
-    "start:worker": "node dist/bullmq/worker.js",
     "queue:clean": "tsx watch src/bullmq/clean.ts"
   },
   "dependencies": {
     "@hono/node-server": "^2.0.8",
     "better-sqlite3": "^12.11.1",
     "bullmq": "^5.80.10",
+    "chokidar": "^5.0.0",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^1.0.0-rc.4",
     "hono": "^4.12.27"

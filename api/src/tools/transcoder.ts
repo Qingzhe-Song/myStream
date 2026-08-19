@@ -99,12 +99,12 @@ export class Transcoder {
 
   public static async generatePlaylist(
     inputVideoPath: string,
-    totalTime: number,
     duration: number = 5,
   ): Promise<void> {
     const folder = dirname(inputVideoPath);
     await mkdir(`${folder}/output`, { recursive: true });
 
+    const totalTime = Number(await this.getTotalSec(inputVideoPath));
     const totalSeg = Math.ceil(totalTime / duration);
 
     let buffer: string = "";

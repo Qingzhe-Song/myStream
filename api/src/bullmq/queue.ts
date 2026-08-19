@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { Queue, QueueEvents } from "bullmq";
 
 export const redisConnection = {
