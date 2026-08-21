@@ -1,0 +1,53 @@
+services:
+  api: 
+    build: ./api
+    ports: 
+      - "${HONO_PORT}:${HONO_PORT}"
+    environment:
+      - HONO_HOST=${HONO_HOST}
+      - HONO_PORT=${HONO_PORT}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    volumes:
+      - ./api/sqlite.db:/app/sqlite.db
+      - ${VIDEO_DIR}:/app/videos
+    depends_on:
+      - bullmq
+      - watcher
+      - redis
+    command: node dist/index.js
+
+  bullmq:
+    build: ./api
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    volumes:
+      - ${VIDEO_DIR}:/app/videos
+    command: node dist/bullmq/worker.js
+
+  watcher:
+    build: ./api
+    environment:
+      - VIDEO_DIR=/app/videos
+    volumes:
+      - ./api/sqlite.db:/app/sqlite.db
+      - ${VIDEO_DIR}:/app/videos
+    command: node dist/watcher/video-watcher.js
+
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis-data:/data
+
+  nginx:
+    build: 
+      context: .
+      dockerfile: nginx/Dockerfile
+    volumes:
+      - ${VIDEO_DIR}:/app/videos
+
+volumes:
+  redis-data:

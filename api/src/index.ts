@@ -1,6 +1,4 @@
 import "dotenv/config";
-import "./watcher/video-watcher.js"
-import "./bullmq/worker.js"
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import transcode from "./routes/transcode.js";
@@ -27,9 +25,10 @@ app.route("/transcode", transcode);
 serve(
   {
     fetch: app.fetch,
-    port: 3000,
+    port: Number(process.env.HONO_PORT ?? 3000),
+    hostname: process.env.HONO_HOST ?? "localhost"
   },
   (info) => {
-    console.log(`Server is running on http://localhost:${info.port}`);
+    console.log(`Server is running on http://${info.address}:${info.port}`);
   },
 );
