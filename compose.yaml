@@ -12,9 +12,12 @@ services:
       - ./api/sqlite.db:/app/sqlite.db
       - ${VIDEO_DIR}:/app/videos
     depends_on:
-      - bullmq
-      - watcher
-      - redis
+      bullmq:
+      watcher:
+      redis:
+        condition: service_healthy
+      nginx:
+        condition: service_healthy
     command: node dist/index.js
 
   bullmq:
@@ -24,6 +27,7 @@ services:
       - REDIS_PORT=6379
     depends_on:
       - redis
+      - nginx
     volumes:
       - ${VIDEO_DIR}:/app/videos
     command: node dist/bullmq/worker.js
@@ -32,6 +36,8 @@ services:
     build: ./api
     environment:
       - VIDEO_DIR=/app/videos
+    depends_on:
+      - nginx
     volumes:
       - ./api/sqlite.db:/app/sqlite.db
       - ${VIDEO_DIR}:/app/videos
@@ -41,11 +47,19 @@ services:
     image: redis:alpine
     volumes:
       - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10m
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   nginx:
     build: 
       context: .
       dockerfile: nginx/Dockerfile
+    ports:
+      - 6767:80
     volumes:
       - ${VIDEO_DIR}:/app/videos
 
